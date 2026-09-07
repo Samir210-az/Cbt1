@@ -327,32 +327,98 @@ window.initApp = function() {
         processForm('childForm');
         processForm('teacherForm');
         
-        let html = '<div style="background:#eef3e8;padding:15px;border-radius:28px;margin-bottom:25px;text-align:center;"><i class="fas fa-chart-line"></i> <strong>Klinik analiz nəticələri (Türkiyə normativləri)</strong></div>';
-        let domainNames = {A:"Anksiyete (narahatlıq)", E:"Emosional tənzimləmə", S:"Sosial bacarıqlar", B:"Davranış & impulsivlik", D:"Gündəlik fəaliyyət"};
-        
+let html = '<div style="background:#eef3e8;padding:15px;border-radius:28px;margin-bottom:25px;text-align:center;"><i class="fas fa-chart-line"></i> <strong>Klinik analiz nəticələri (Türkiyə normativləri)</strong></div>';
+
+        const RECOMMENDATIONS = {
+  "A": {
+    "domain_name": "Anksiyete (narahatlıq)",
+    "low": {
+      "psych": "Narahatlıq göstəriciləri yaş qrupu üçün normal hüdüddadır. Ara-sıra yaşanan gərginlik uşağın təbii inkişafının bir hissəsidir və özlüyündə problem sayılmır. Hazırkı mərhələdə strukturlaşdırılmış müdaxiləyə ehtiyac yoxdur — illik təkrar skrininq kifayət edir.",
+      "parent": "Hər gün 5-10 dəqiqə uşağınızla sakit söhbət edin, günün necə keçdiyini soruşun. Yeni situasiyalara (yeni yer, yeni insan) tədricən alışdırın, məcbur etməyin. Qorxduğu şeyi adlandırmasına kömək edin: 'Bu səni bir az narahat edir, elə deyilmi?'"
+    },
+    "mid": {
+      "psych": "Orta səviyyəli narahatlıq siqnalları müşahidə olunur. 4-6 seanslıq psixoedukasiya proqramı tövsiyə olunur — nəfəs texnikaları və tədrici məruz qalma (graded exposure) prinsipləri əsasında. Valideyn iştirakı olan format üstünlük təşkil edir.",
+      "parent": "Hər axşam uşağınızla birlikdə sadə nəfəs məşqi edin: burundan içəri nəfəs alıb ağızdan yavaş-yavaş buraxın, 3 dəfə təkrarlayın. Qorxduğu kiçik bir şeyi (məsələn tək otağa girmək) həftədə bir dəfə addım-addım sınamağa təşviq edin, uğur qazandıqda konkret tərifləyin. Narahatlığı barədə danışmasını qadağan etməyin."
+    },
+    "high": {
+      "psych": "Yüksək klinik narahatlıq həddi aşılıb. Strukturlaşdırılmış CBT proqramı (FYF, Cool Kids və ya SAS metodologiyası əsaslı) həftədə 1-2 fərdi seans şəklində başlanmalıdır. Somatik şikayətlər (baş və ya qarın ağrısı) müşahidə olunursa, pediatrla əlaqələndirmə tövsiyə olunur.",
+      "parent": "Gündəlik 'narahatlıq termometri' tətbiq edin (1-10 arası rəqəmlə ifadə) — bu, uşağın öz hissini idarə etməsinə kömək edir. Qorxduğu vəziyyətdən məcburi qaçındırmayın, amma zorla da məruz qoymayın. Psixoloqla razılaşdırılmamış yeni öhdəlik (yeni məktəb, yeni fəaliyyət) yükləməkdən çəkinin."
+    }
+  },
+  "E": {
+    "domain_name": "Emosional tənzimləmə",
+    "low": {
+      "psych": "Emosional tənzimləmə bacarıqları yaşına uyğun səviyyədədir. Ara-sıra əsəbləşmə və məyusluq reaksiyaları normal inkişafın hissəsidir. Xüsusi müdaxilə tələb olunmur.",
+      "parent": "Uşağınız əsəbiləşəndə əvvəlcə sakitləşməsi üçün vaxt verin, izahatı sonraya saxlayın. 'Sən indi qəzəblisən, bu normaldır' kimi sözlərlə hissini adlandırın. Sakitləşdikdən sonra nə baş verdiyini birlikdə sakit şəkildə müzakirə edin."
+    },
+    "mid": {
+      "psych": "Orta dərəcədə emosional partlayış tezliyi var. Duyğu tanıma və özünü sakitləşdirmə bacarıqlarına yönəlmiş 4-6 seanslıq təlim faydalı olar. Sadə 'duyğu termometri' kartlarından istifadə edilə bilər.",
+      "parent": "Evdə sakit bir künc yaradın (yumşaq yastıq, sevimli oyuncaq). Qəzəbləndikdə oraya getməyi cəza kimi deyil, sakitləşmə vasitəsi kimi təklif edin. Sakit vaxtlarda 'Əsəbləşəndə nə edə bilərik?' sualını birlikdə müzakirə edib seçimlər siyahısı hazırlayın."
+    },
+    "high": {
+      "psych": "Tez-tez və şiddətli emosional partlayışlar klinik əhəmiyyət daşıyır. Fərdi seanslar (həftədə 1-2 dəfə) tövsiyə olunur, əsas fokus: tetikləyicini tanıma, bədən siqnallarını izləmə, alternativ reaksiya bacarıqları öyrətmək. Partlayışlar məktəbdə də olursa, məktəblə əlaqə faydalı olar.",
+      "parent": "Partlayış anında danışmaq əvəzinə sakit fiziki yaxınlıq təklif edin (yanında sakitcə oturun), izahatı sonraya saxlayın. Gündəlik qeyd dəftərində hansı vəziyyətlərin qəzəbi tetiklədiyini yazın — bu, mütəxəssislə iş üçün çox dəyərli olacaq. Ailədə sabit, proqnozlaşdırıla bilən gündəlik rejim saxlayın."
+    }
+  },
+  "S": {
+    "domain_name": "Sosial bacarıqlar",
+    "low": {
+      "psych": "Sosial bacarıqlar yaş normativlərinə uyğundur. Dostluq qurma və empatiya göstərmə bacarığı gözlənilən səviyyədədir. Əlavə müdaxilə tələb olunmur.",
+      "parent": "Yaşıdları ilə oyun tarixləri təşkil etməyə davam edin. Paylaşma və növbə gözləmə situasiyalarında müsbət davranışı fərq edib konkret tərifləyin ('Növbəni gözlədin, çox gözəl oldu')."
+    },
+    "mid": {
+      "psych": "Sosial qarşılıqlı əlaqədə orta səviyyəli çətinlik var. Kiçik qrup formatında sosial bacarıq təlimi (4-6 seans) — növbə gözləmə, söhbətə başlama, emosiya oxuma məşqləri — tövsiyə olunur.",
+      "parent": "Evdə növbəli oyunlar (lotoreya, domino) oynayaraq növbə gözləməyi praktik edin. Cizgi filminə baxarkən 'O uşaq indi nə hiss edir?' sualı ilə empatiya bacarığını gücləndirin."
+    },
+    "high": {
+      "psych": "Sosial təcrid və ya davamlı münaqişə riski görünür. Struktur sosial bacarıq proqramı (məsələn PEERS metodologiyası əsaslı) və fərdi dəstək tövsiyə olunur. Müəllimlə əlaqə saxlanılıb sinifdə dəstəkləyici mühit yaradılması vacibdir.",
+      "parent": "Kiçik, nəzarətli sosial fürsətlər yaradın (1 dost ilə qısa oyun tarixi), böyük qrup situasiyalarını tədricən artırın. Sadə sosial ifadələri ('Salam, necəsən, oynayaq?') əvvəlcədən birlikdə məşq edin."
+    }
+  },
+  "B": {
+    "domain_name": "Davranış & impulsivlik",
+    "low": {
+      "psych": "Davranış tənzimləməsi yaşına uyğundur. Ara-sıra impulsiv davranış təbiidir, xüsusi müdaxilə tələb olunmur.",
+      "parent": "Aydın, sadə qaydalar qoyun və ardıcıl tətbiq edin. Yaxşı davranışı dərhal, konkret sözlərlə tərifləyin ('Növbəni gözlədin, əla oldu')."
+    },
+    "mid": {
+      "psych": "Orta dərəcədə impulsivlik/davranış çətinliyi müşahidə olunur. Müsbət gücləndirmə sistemi və aydın nəticələr üzərində qurulmuş davranış idarəetmə strategiyaları üzrə valideyn məsləhəti tövsiyə olunur.",
+      "parent": "Sadə xal və ya ulduz sistemi qurun — yaxşı davranış üçün dərhal kiçik mükafat. Qaydaları sakit vaxtda, əvvəlcədən izah edin, davranış baş verən anda yox."
+    },
+    "high": {
+      "psych": "Yüksək impulsivlik və ya aqressiya klinik diqqət tələb edir. Fərdi davranış terapiyası, lazım gəldikdə pediatrik qiymətləndirmə (o cümlədən diqqət/hiperaktivlik skrininqi) tövsiyə olunur.",
+      "parent": "Təhlükəli davranışları (vurma, zədələmə) dərhal, sakit və qısa müdaxilə ilə dayandırın, uzun izahatdan çəkinin. Çətinliyin hansı vaxtlarda artdığını qeyd edin (yorğunluq, aclıq, keçid anları) — bu məlumat mütəxəssis üçün çox dəyərlidir."
+    }
+  },
+  "D": {
+    "domain_name": "Gündəlik fəaliyyət",
+    "low": {
+      "psych": "Gündəlik fəaliyyətlərdə müstəqillik yaşına uyğundur. Xüsusi dəstək tələb olunmur.",
+      "parent": "Uşağınıza kiçik məsuliyyətlər verməyə davam edin (paltarını yığmaq, süfrəyə kömək). Müstəqil tamamladığı işləri tərifləyin."
+    },
+    "mid": {
+      "psych": "Gündəlik rutinlərdə orta səviyyəli çətinlik var. Vizual cədvəl və addım-addım təlimat sistemi tövsiyə olunur.",
+      "parent": "Şəkilli gündəlik rutin cədvəli hazırlayın (səhər: yataqdan qalx → geyin → yemək). Tamamlanan hər addımı birlikdə işarələyin — bu, müstəqilliyi artırır."
+    },
+    "high": {
+      "psych": "Öz qulluq və gündəlik fəaliyyətlərdə ciddi çətinlik mövcuddur. Ergoterapevt qiymətləndirməsi və addım-addım bacarıq öyrətmə proqramı tövsiyə olunur.",
+      "parent": "Hər tapşırığı ən kiçik addımlara bölün (məsələn 'dişləri fırçala' → fırçanı götür → pastanı sıx). Hər addımı ayrıca göstərin, birlikdə edin. Təkrar lazım ola bilər — bu bacarıq inkişafının normal hissəsidir."
+    }
+  }
+};
+
         for(let d of ['A','E','S','B','D']) {
             let percent = counts[d] ? (scores[d]/counts[d]/4)*100 : 0;
             let color = percent>70 ? "#c2410c" : (percent>40 ? "#eab308" : "#2b7a4b");
             let level = percent>70 ? "🔴 Yüksək klinik ehtiyac" : (percent>40 ? "⚠️ Subklinik / orta risk" : "✅ Normativ diapazon");
-            
-            let psychMsg = "";
-            let parentMsg = "";
-            if(percent>70) {
-                psychMsg = "🏥 Mütləq strukturlaşdırılmış CBT proqramı: FYF, Cool Kids, SAS metodları ilə həftədə 1-2 sessiya fərdi terapiya. Ayda bir dəfə valideynlə superviziya. Ev tapşırıqları mütəmadi izlənilməli, narahatlıq termometri gündəlik tətbiq edilməlidir.";
-                parentMsg = "👨‍👩‍👧 Valideyn təlimi mütləqdir: Uşağınızın emosiyalarını tanımağa kömək edin. Gündəlik 'narahatlıq termometri' tətbiq edin. Evdə müsbət gücləndirmə sistemi qurun. Stop-Think-Plan texnikasını birlikdə öyrənin. Peşəkar dəstək olmadan təxirə salmayın.";
-            } else if(percent>40) {
-                psychMsg = "📋 Profilaktik CBT strategiyaları: 4-6 seans qrup bacarıqları təlimi, psixoedukasiya, sosial bacarıq dəstəyi. Valideyn məsləhəti. Əsas diqqət: duyğu tənzimləmə və impuls nəzarəti bacarıqlarına yönəldilsin.";
-                parentMsg = "📖 Valideyn təlimi tövsiyə olunur: Uşağınızla birlikdə 'Stop-Think-Plan' texnikasını öyrənin. Onun güclü tərəflərini dəstəkləyin. Mütəmadi olaraq məktəb psixoloqu ilə əlaqə saxlayın. Evdə kiçik mükafat sistemləri tətbiq edin.";
-            } else {
-                psychMsg = "✅ Monitorinq davam etdirilsin. İllik skrininq kifayətdir. Heç bir müdaxilə tələb olunmur, lakin valideynlərə profilaktik tövsiyələr verilə bilər. Güclü tərəflərin qorunması vacibdir.";
-                parentMsg = "🌟 Uşağınız normativ diapazondadır. Onu olduğu kimi qəbul edin, emosional inkişafı üçün açıq ünsiyyət qurmağa davam edin. Lazım gələrsə, gələcək dəyişiklikləri izləyin.";
-            }
-            
+            let levelKey = percent>70 ? "high" : (percent>40 ? "mid" : "low");
+            let rec = RECOMMENDATIONS[d][levelKey];
+
             html += '<div class="domain-card" style="border-left-color:'+color+'">';
-            html += '<h3>'+domainNames[d]+' – '+percent.toFixed(0)+'% <span style="background:#eef2fa;padding:4px 12px;border-radius:40px;font-size:0.75rem;">'+level+'</span></h3>';
+            html += '<h3>'+RECOMMENDATIONS[d].domain_name+' – '+percent.toFixed(0)+'% <span style="background:#eef2fa;padding:4px 12px;border-radius:40px;font-size:0.75rem;">'+level+'</span></h3>';
             html += '<div class="scale-bar"><div class="scale-fill" style="width:'+percent+'%; background:'+color+'"></div></div>';
-            html += '<div class="psych-box"><i class="fas fa-user-md"></i> <strong>Psixoloq üçün tövsiyə:</strong><br>'+psychMsg+'</div>';
-            html += '<div class="parent-box"><i class="fas fa-home"></i> <strong>Valideyn üçün tövsiyə:</strong><br>'+parentMsg+'</div></div>';
+            html += '<div class="psych-box"><i class="fas fa-user-md"></i> <strong>Mütəxəssis üçün tövsiyə:</strong><br>'+rec.psych+'</div>';
+            html += '<div class="parent-box"><i class="fas fa-home"></i> <strong>Valideyn üçün ev tapşırığı:</strong><br>'+rec.parent+'</div></div>';
         }
         
         let totalAvg = ( (scores.A/counts.A/4)+(scores.E/counts.E/4)+(scores.S/counts.S/4)+(scores.B/counts.B/4)+(scores.D/counts.D/4) )/5 * 100;
