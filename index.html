@@ -4,56 +4,70 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>AN Psixoloji Dəstək | CBT Klinik Qiymətləndirmə</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        :root{
+          --bordo:#2B5EA8;--bordo-bright:#3B82F6;--bordo-deep:#0A1830;--bordo-mid:#1E3A5F;
+          --gold:#22D3EE;--gold-light:#7EC8FF;--gold-dark:#1E90D6;
+          --teal:#2DD4BF;--teal-light:#5EE6D3;
+          --bg:#05070D;--card:#111726;--text:#E8ECF2;--muted:#8A93A6;
+          --white:#161D2E;--line:#232B3D;
+          --shadow:0 8px 32px rgba(59,130,246,0.25);
+          --radius:20px;--radius-sm:12px;
+        }
         *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:'Inter',sans-serif;background:#f0f4fa;padding:16px}
+        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);padding:16px}
+        h1,h2,h3{font-family:'Playfair Display',serif}
         .container{max-width:1300px;margin:0 auto;width:100%}
-        .license-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);display:flex;align-items:center;justify-content:center;z-index:9999}
-        .license-box{background:#fff;border-radius:50px;padding:30px 20px;max-width:400px;width:90%;text-align:center}
-        .license-box i{font-size:2.5rem;color:#2b7a4b}
-        .license-box input{width:100%;padding:12px;margin:15px 0;border:2px solid #ddd;border-radius:50px;font-size:1rem}
-        .license-box button{background:#2b7a4b;color:#fff;border:none;padding:12px 25px;border-radius:50px;cursor:pointer;font-weight:bold;font-size:1rem}
-        .error-msg{color:red;margin-top:10px;display:none}
-        .banner{background:#1b4d3a;color:#fff;padding:14px 18px;border-radius:35px;margin-bottom:20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-        .banner i{font-size:1.6rem}
-        .header-card{background:#fff;border-radius:35px;padding:15px 20px;margin-bottom:20px;display:flex;flex-direction:column;gap:15px}
+        .license-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(58,10,0,0.92);display:flex;align-items:center;justify-content:center;z-index:9999}
+        .license-box{background:var(--white);border-radius:var(--radius);padding:30px 20px;max-width:400px;width:90%;text-align:center;box-shadow:var(--shadow)}
+        .license-box i{font-size:2.5rem;color:var(--bordo-bright)}
+        .license-box input{width:100%;padding:12px;margin:15px 0;border:2px solid var(--line);border-radius:var(--radius-sm);font-size:1rem}
+        .license-box button{background:var(--bordo-bright);color:#fff;border:none;padding:12px 25px;border-radius:var(--radius-sm);cursor:pointer;font-weight:bold;font-size:1rem}
+        .error-msg{color:var(--bordo-bright);margin-top:10px;display:none}
+        .banner{background:var(--bordo);color:#fff;padding:14px 18px;border-radius:var(--radius);margin-bottom:20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;box-shadow:var(--shadow)}
+        .banner i{font-size:1.6rem;color:var(--gold-light)}
+        .header-card{background:var(--white);border-radius:var(--radius);padding:15px 20px;margin-bottom:20px;display:flex;flex-direction:column;gap:15px;box-shadow:var(--shadow)}
         @media (min-width: 768px) {
             .header-card{flex-direction:row;justify-content:space-between;align-items:center}
             .info-form{flex-wrap:nowrap}
         }
-        .logo h2{color:#1f5e3a;font-size:1.3rem}
-        .logo p{font-size:0.8rem}
-        .info-form{display:flex;flex-wrap:wrap;gap:10px;background:#f5f7fa;padding:10px 15px;border-radius:50px;width:100%}
-        .info-form input{padding:6px 12px;border-radius:30px;border:1px solid #ccc;flex:1;min-width:100px}
-        .btn{background:#fff;border:1px solid #2b7a4b;padding:6px 14px;border-radius:40px;cursor:pointer;font-weight:600;transition:0.2s;white-space:nowrap}
-        .btn:hover{background:#2b7a4b;color:#fff}
+        .logo{display:flex;align-items:center;gap:10px}
+        .logo img{height:42px;width:auto;border-radius:8px}
+        .logo h2{color:var(--bordo);font-size:1.3rem}
+        .logo p{font-size:0.8rem;color:var(--muted)}
+        .info-form{display:flex;flex-wrap:wrap;gap:10px;background:var(--card);padding:10px 15px;border-radius:var(--radius);width:100%}
+        .info-form input{padding:6px 12px;border-radius:var(--radius-sm);border:1px solid var(--line);flex:1;min-width:100px;background:var(--white)}
+        .btn{background:var(--white);border:1px solid var(--bordo);color:var(--bordo);padding:6px 14px;border-radius:var(--radius-sm);cursor:pointer;font-weight:600;transition:0.2s;white-space:nowrap}
+        .btn:hover{background:var(--bordo);color:#fff}
         .tab-buttons{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
-        .tab-btn{background:#eef2ff;border:none;padding:8px 18px;border-radius:40px;cursor:pointer;font-weight:600;font-size:0.9rem}
-        .tab-btn.active{background:#2b7a4b;color:#fff}
+        .tab-btn{background:var(--card);border:none;color:var(--text);padding:8px 18px;border-radius:var(--radius-sm);cursor:pointer;font-weight:600;font-size:0.9rem}
+        .tab-btn.active{background:var(--bordo);color:#fff}
         .tab-content{display:none}
         .tab-content.active{display:block}
-        .question-card{background:#fff;border-radius:35px;padding:20px;margin-bottom:20px}
-        .card-header{font-size:1.3rem;font-weight:800;border-bottom:2px solid #cfe3dc;padding-bottom:10px;margin-bottom:18px;display:flex;align-items:center;gap:8px;color:#1c5d42;flex-wrap:wrap}
-        .question-item{margin-bottom:22px;padding-bottom:10px;border-bottom:1px solid #eef3f0}
-        .question-text{font-weight:600;margin-bottom:10px;font-size:0.95rem}
+        .question-card{background:var(--white);border-radius:var(--radius);padding:20px;margin-bottom:20px;box-shadow:var(--shadow)}
+        .card-header{font-size:1.3rem;font-weight:800;border-bottom:2px solid var(--line);padding-bottom:10px;margin-bottom:18px;display:flex;align-items:center;gap:8px;color:var(--bordo);flex-wrap:wrap}
+        .question-item{margin-bottom:22px;padding-bottom:10px;border-bottom:1px solid var(--line);border-radius:8px;transition:background 0.3s}
+        .question-item.missing{background:rgba(176,0,1,0.06);box-shadow:0 0 0 2px var(--bordo-bright) inset;padding:10px}
+        .question-text{font-weight:600;margin-bottom:10px;font-size:0.95rem;color:var(--text)}
         .options{display:flex;flex-wrap:wrap;gap:8px}
-        .options label{background:#f5f9fc;padding:5px 10px;border-radius:50px;font-size:0.75rem;cursor:pointer;border:1px solid #ddd}
+        .options label{background:var(--card);padding:5px 10px;border-radius:var(--radius-sm);font-size:0.75rem;cursor:pointer;border:1px solid var(--line)}
         input[type="radio"]{margin-right:4px}
-        .btn-calc{background:#1e6342;width:100%;padding:14px;font-size:1.1rem;color:#fff;font-weight:700;border-radius:60px;cursor:pointer;margin:20px 0;border:none}
-        .results-box{background:#fff;border-radius:35px;padding:20px;margin-top:20px;display:none}
-        .domain-card{background:#f9fafb;border-radius:28px;padding:16px;margin-bottom:18px;border-left:6px solid}
-        .scale-bar{background:#e2e8f0;border-radius:20px;height:10px;margin:10px 0}
-        .scale-fill{height:10px;border-radius:20px}
-        .psych-box,.parent-box{padding:10px;border-radius:24px;margin-top:10px;line-height:1.4;font-size:0.85rem}
-        .psych-box{background:#e8f0fe;border-left:4px solid #2b7a4b}
-        .parent-box{background:#fef2e0;border-left:4px solid #e67e22}
-        .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;z-index:10000}
-        .modal-content{background:#fff;max-width:850px;width:90%;max-height:85vh;overflow-y:auto;border-radius:40px;padding:25px;position:relative}
-        .close-modal{position:absolute;right:18px;top:12px;font-size:1.6rem;cursor:pointer}
-        .test-list-item{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #ddd;padding:10px;flex-wrap:wrap;gap:8px}
-        footer{text-align:center;margin-top:30px;color:#3c6e5a;font-size:0.7rem}
+        .btn-calc{background:var(--bordo);width:100%;padding:14px;font-size:1.1rem;color:#fff;font-weight:700;border-radius:var(--radius);cursor:pointer;margin:20px 0;border:none;box-shadow:var(--shadow)}
+        .btn-calc:hover{background:var(--bordo-mid)}
+        .results-box{background:var(--white);border-radius:var(--radius);padding:20px;margin-top:20px;display:none;box-shadow:var(--shadow)}
+        .domain-card{background:var(--card);border-radius:var(--radius);padding:16px;margin-bottom:18px;border-left:6px solid}
+        .scale-bar{background:var(--line);border-radius:var(--radius-sm);height:10px;margin:10px 0}
+        .scale-fill{height:10px;border-radius:var(--radius-sm)}
+        .psych-box,.parent-box{padding:10px;border-radius:var(--radius-sm);margin-top:10px;line-height:1.4;font-size:0.85rem}
+        .psych-box{background:rgba(42,157,143,0.12);border-left:4px solid var(--teal)}
+        .parent-box{background:rgba(210,165,93,0.18);border-left:4px solid var(--gold-dark)}
+        .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(58,10,0,0.6);align-items:center;justify-content:center;z-index:10000}
+        .modal-content{background:var(--white);max-width:850px;width:90%;max-height:85vh;overflow-y:auto;border-radius:var(--radius);padding:25px;position:relative}
+        .close-modal{position:absolute;right:18px;top:12px;font-size:1.6rem;cursor:pointer;color:var(--bordo)}
+        .test-list-item{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding:10px;flex-wrap:wrap;gap:8px}
+        footer{text-align:center;margin-top:30px;color:var(--muted);font-size:0.7rem}
         @media (max-width: 550px) {
             .options label{padding:4px 8px;font-size:0.7rem}
             .tab-btn{padding:6px 14px;font-size:0.8rem}
@@ -68,7 +82,7 @@
     <div class="banner"><i class="fas fa-chart-line"></i> <strong>AN Klinik CBT Qiymətləndirmə Aləti</strong> – Lisenziyalı versiya</div>
     
     <div class="header-card">
-        <div class="logo"><h2><i class="fas fa-brain"></i> AN Psixoloji Dəstək Mərkəzi</h2><p>CBT əsaslı klinik qiymətləndirmə</p></div>
+        <div class="logo"><img src="logo.png" alt="AN Psixoloji Dəstək Mərkəzi"><div><h2>AN Psixoloji Dəstək Mərkəzi</h2><p>CBT əsaslı klinik qiymətləndirmə</p></div></div>
         <div class="info-form">
             <div><input type="text" id="childName" placeholder="Ad" list="existingNames"></div>
             <datalist id="existingNames"></datalist>
@@ -239,6 +253,25 @@ function getAnswers(formId) {
     return obj;
 }
 
+function scrollToFirstMissing(formId, tabName) {
+    const items = document.querySelectorAll('#' + formId + ' .question-item');
+    for (const item of items) {
+        if (!item.querySelector('input[type="radio"]:checked')) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            const tabBtn = document.querySelector('.tab-btn[data-tab="' + tabName + '"]');
+            if (tabBtn) tabBtn.classList.add('active');
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            const tabContent = document.getElementById(tabName + 'Tab');
+            if (tabContent) tabContent.classList.add('active');
+            item.classList.add('missing');
+            item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(() => item.classList.remove('missing'), 3000);
+            return true;
+        }
+    }
+    return false;
+}
+
 window.initApp = function() {
     renderForm('parentForm', parentQuestions, parentDomains, 'p');
     renderForm('childForm', childQuestions, childDomains, 'c');
@@ -249,10 +282,8 @@ window.initApp = function() {
         let name = document.getElementById('childName').value.trim();
         let surname = document.getElementById('childSurname').value.trim();
         if(!name || !surname) { alert('Ad və soyad daxil edin'); return; }
-        if(getCheckedCount('parentForm')!==20 || getCheckedCount('childForm')!==20) {
-            alert('Valideyn (20) və Uşaq (20) suallarını tam cavablandırın (Bilmirəm də keçərlidir)');
-            return;
-        }
+        if (scrollToFirstMissing('parentForm', 'parent')) return;
+        if (scrollToFirstMissing('childForm', 'child')) return;
         allTests.push({
             id: Date.now(),
             name: name,
@@ -306,10 +337,8 @@ window.initApp = function() {
     };
 
     function performCalculation() {
-        if(getCheckedCount('parentForm')!==20 || getCheckedCount('childForm')!==20) {
-            alert('Zəhmət olmasa valideyn (20) və uşaq (20) suallarını tam cavablandırın!');
-            return;
-        }
+        if (scrollToFirstMissing('parentForm', 'parent')) return;
+        if (scrollToFirstMissing('childForm', 'child')) return;
         let scores = {A:0, E:0, S:0, B:0, D:0};
         let counts = {A:0, E:0, S:0, B:0, D:0};
         
@@ -409,7 +438,7 @@ let html = '<div style="background:#eef3e8;padding:15px;border-radius:28px;margi
 
         for(let d of ['A','E','S','B','D']) {
             let percent = counts[d] ? (scores[d]/counts[d]/4)*100 : 0;
-            let color = percent>70 ? "#c2410c" : (percent>40 ? "#eab308" : "#2b7a4b");
+            let color = percent>70 ? "#FF5470" : (percent>40 ? "#FBBF24" : "#2DD4BF");
             let level = percent>70 ? "🔴 Yüksək klinik ehtiyac" : (percent>40 ? "⚠️ Subklinik / orta risk" : "✅ Normativ diapazon");
             let levelKey = percent>70 ? "high" : (percent>40 ? "mid" : "low");
             let rec = RECOMMENDATIONS[d][levelKey];
