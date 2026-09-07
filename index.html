@@ -162,10 +162,6 @@ function isLicensed() {
     document.getElementById('licenseOverlay').style.display = 'none';
   }
 
-  document.getElementById('mainApp').style.display = 'block';
-  document.getElementById('licenseOverlay').style.display = 'none';
-  if (typeof initApp === 'function') initApp();
-
   const verifyBtn = document.getElementById('verifyLicenseBtn');
   if (verifyBtn) {
     verifyBtn.onclick = function() {
@@ -404,6 +400,10 @@ window.initApp = function() {
     document.getElementById('closeHistoryModalBtn').onclick = () => histModal.style.display = 'none';
     window.onclick = (e) => { if(e.target === guideModal) guideModal.style.display = 'none'; if(e.target === histModal) histModal.style.display = 'none'; };
 };
+
+document.getElementById('mainApp').style.display = 'block';
+document.getElementById('licenseOverlay').style.display = 'none';
+initApp();
 
 </script>
 </body>
