@@ -86,6 +86,13 @@
         .psych-box strong,.parent-box strong{display:block;margin-bottom:6px;font-size:0.9rem}
         .psych-box{background:rgba(45,212,191,0.14);border-left:4px solid var(--teal)}
         .parent-box{background:rgba(59,130,246,0.18);border-left:4px solid #3B82F6}
+        .save-status{padding:10px 14px;border-radius:var(--radius-sm);margin-bottom:14px;font-size:0.9rem;font-weight:600;display:none}
+        .save-status.ok{display:block;background:rgba(45,212,191,0.14);border:1px solid var(--teal);color:#CFF7F0}
+        .save-status.warn{display:block;background:rgba(251,191,36,0.14);border:1px solid #FBBF24;color:#FDEBB4}
+        .sig-block{background:#1D2740;border:1px solid #33415F;border-radius:var(--radius);padding:16px;margin-top:16px;color:#fff}
+        .sig-block canvas{display:block;width:100%;height:140px;margin-top:10px;background:#fff;border-radius:var(--radius-sm);touch-action:none}
+        .sig-row .btn{color:#DCE8FF;border-color:#6C86B8}
+        .sig-row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px;font-size:0.85rem;color:#C3CCE0}
         .res-total{background:#1D2740;border:1px solid #33415F;border-radius:var(--radius);padding:20px 16px;margin-top:6px;color:#fff}
         .res-total .total-label{font-size:0.9rem;color:#C3CCE0;font-weight:600}
         .res-total .total-value{font-size:1.5rem;font-weight:800;margin-top:4px}
@@ -303,6 +310,82 @@ function renderForm(containerId, questions, domains, prefix) {
     document.getElementById(containerId).innerHTML = html;
 }
 
+let currentTestId = null;
+let sigData = '';
+
+function persistTests() {
+    try { localStorage.setItem('an_cbt_data', JSON.stringify(allTests)); return true; } catch (e) { return false; }
+}
+
+function saveCurrentTest() {
+    const name = document.getElementById('childName').value.trim();
+    const surname = document.getElementById('childSurname').value.trim();
+    if (!name || !surname) return 'noname';
+    const idx = allTests.findIndex(t => t.id === currentTestId);
+    const old = idx >= 0 ? allTests[idx] : null;
+    const commentEl = document.getElementById('psychComment');
+    const rec = {
+        id: old ? old.id : Date.now(),
+        name: name,
+        surname: surname,
+        age: document.getElementById('childAge').value,
+        specialist: document.getElementById('specialist').value,
+        date: old ? old.date : new Date().toLocaleString(),
+        parent: getAnswers('parentForm'),
+        child: getAnswers('childForm'),
+        teacher: getAnswers('teacherForm'),
+        comment: commentEl ? commentEl.value : (old ? old.comment || '' : ''),
+        signature: sigData
+    };
+    if (idx >= 0) allTests[idx] = rec; else allTests.push(rec);
+    currentTestId = rec.id;
+    if (!persistTests()) return 'error';
+    updateDatalist();
+    return 'ok';
+}
+
+function initSignature() {
+    const c = document.getElementById('sigCanvas');
+    if (!c) return;
+    const dpr = window.devicePixelRatio || 1;
+    const w = c.clientWidth, h = 140;
+    c.width = w * dpr; c.height = h * dpr;
+    const ctx = c.getContext('2d');
+    ctx.scale(dpr, dpr);
+    ctx.lineWidth = 2.5; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = '#0A1830';
+    if (sigData) {
+        const img = new Image();
+        img.onload = function() { ctx.drawImage(img, 0, 0, w, h); };
+        img.src = sigData;
+    }
+    let drawing = false;
+    const pos = function(e) { const r = c.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+    c.onpointerdown = function(e) {
+        drawing = true;
+        c.setPointerCapture(e.pointerId);
+        const p = pos(e);
+        ctx.beginPath(); ctx.moveTo(p[0], p[1]); ctx.lineTo(p[0] + 0.1, p[1] + 0.1); ctx.stroke();
+    };
+    c.onpointermove = function(e) {
+        if (!drawing) return;
+        const p = pos(e);
+        ctx.lineTo(p[0], p[1]); ctx.stroke();
+    };
+    const end = function() {
+        if (!drawing) return;
+        drawing = false;
+        sigData = c.toDataURL('image/png');
+        saveCurrentTest();
+    };
+    c.onpointerup = end;
+    c.onpointercancel = end;
+    document.getElementById('sigClear').onclick = function() {
+        ctx.clearRect(0, 0, w, h);
+        sigData = '';
+        saveCurrentTest();
+    };
+}
+
 function updateDatalist() {
     let names = [...new Set(allTests.map(t=>t.name).filter(n=>n))];
     let dl = document.getElementById('existingNames');
@@ -344,6 +427,10 @@ window.initApp = function() {
     renderForm('childForm', childQuestions, childDomains, 'c');
     renderForm('teacherForm', teacherQuestions, teacherDomains, 't');
     updateDatalist();
+    if (navigator.storage && navigator.storage.persist) { navigator.storage.persist().catch(function(){}); }
+    ['childName', 'childSurname'].forEach(function(id) {
+        document.getElementById(id).addEventListener('input', function() { currentTestId = null; sigData = ''; });
+    });
     
     document.getElementById('saveBtn').onclick = function() {
         let name = document.getElementById('childName').value.trim();
@@ -351,20 +438,8 @@ window.initApp = function() {
         if(!name || !surname) { alert('Ad və soyad daxil edin'); return; }
         if (scrollToFirstMissing('parentForm', 'parent')) return;
         if (scrollToFirstMissing('childForm', 'child')) return;
-        allTests.push({
-            id: Date.now(),
-            name: name,
-            surname: surname,
-            age: document.getElementById('childAge').value,
-            specialist: document.getElementById('specialist').value,
-            date: new Date().toLocaleString(),
-            parent: getAnswers('parentForm'),
-            child: getAnswers('childForm'),
-            teacher: getAnswers('teacherForm')
-        });
-        localStorage.setItem('an_cbt_data', JSON.stringify(allTests));
-        updateDatalist();
-        alert('Test uğurla saxlanıldı');
+        const r = saveCurrentTest();
+        alert(r === 'ok' ? 'Test uğurla saxlanıldı' : 'Yaddaşa yazmaq mümkün olmadı. Brauzerdə yer və ya icazə problemi ola bilər.');
     };
     
     document.getElementById('historyBtn').onclick = function() {
@@ -381,6 +456,8 @@ window.initApp = function() {
                 btn.onclick = function(e) {
                     let idx = parseInt(e.target.dataset.idx);
                     let t = allTests[idx];
+                    currentTestId = t.id;
+                    sigData = t.signature || '';
                     document.getElementById('childName').value = t.name;
                     document.getElementById('childSurname').value = t.surname;
                     document.getElementById('childAge').value = t.age;
@@ -423,7 +500,7 @@ window.initApp = function() {
         processForm('childForm');
         processForm('teacherForm');
         
-let html = '<div class="res-head"><i class="fas fa-chart-line"></i>Klinik analiz nəticələri<br><small style="font-weight:500;opacity:0.85">Türkiyə normativləri</small></div>';
+let html = '<div class="res-head"><i class="fas fa-chart-line"></i>Klinik analiz nəticələri<br><small style="font-weight:500;opacity:0.85">Türkiyə normativləri</small></div><div class="save-status no-export" id="saveStatus"></div>';
 
         const RECOMMENDATIONS = {
   "A": {
@@ -525,11 +602,24 @@ let html = '<div class="res-head"><i class="fas fa-chart-line"></i>Klinik analiz
         html += '<div class="res-total" id="resTotal">';
         html += '<div class="total-label">📊 Ümumi çətinlik indeksi</div>';
         html += '<div class="total-value" style="color:'+totalColor+'">'+totalAvg.toFixed(0)+'% · '+totalLevel+'</div>';
-        html += '<div class="no-export"><textarea id="psychComment" rows="4" placeholder="Psixoloqun əlavə qeydləri, müşahidələri və tövsiyələri..."></textarea>';
-        html += '<button id="exportHtml" class="btn"><i class="fas fa-download"></i> HTML hesabatı yadda saxla</button></div></div>';
+        html += '<div class="no-export"><textarea id="psychComment" rows="4" placeholder="Psixoloqun əlavə qeydləri, müşahidələri və tövsiyələri..."></textarea></div></div>';
+        html += '<div class="sig-block no-export"><div class="total-label">✍️ Psixoloqun imzası</div><canvas id="sigCanvas"></canvas><div class="sig-row"><span id="sigName"></span><button type="button" class="btn" id="sigClear">Təmizlə</button></div></div>';
+        html += '<div class="res-total no-export" style="margin-top:16px"><button id="exportHtml" class="btn"><i class="fas fa-download"></i> HTML hesabatı yadda saxla</button></div>';
         
         document.getElementById('resultsArea').innerHTML = html;
         document.getElementById('resultsArea').style.display = 'block';
+
+        const savedRec = allTests.find(t => t.id === currentTestId);
+        if (savedRec && savedRec.comment) document.getElementById('psychComment').value = savedRec.comment;
+        document.getElementById('psychComment').addEventListener('change', saveCurrentTest);
+        const spec = document.getElementById('specialist').value.trim();
+        document.getElementById('sigName').textContent = (spec ? 'Psixoloq: ' + spec + ' · ' : '') + new Date().toLocaleDateString();
+        initSignature();
+        const st = document.getElementById('saveStatus');
+        const saveResult = saveCurrentTest();
+        if (saveResult === 'ok') { st.className = 'save-status ok no-export'; st.textContent = '✅ Test yaddaşa yazıldı. «Keçmiş» düyməsindən açmaq olar.'; }
+        else if (saveResult === 'noname') { st.className = 'save-status warn no-export'; st.textContent = '⚠️ Test yaddaşa yazılmadı: yuxarıda ad və soyad daxil edib «Saxla» düyməsinə basın.'; }
+        else { st.className = 'save-status warn no-export'; st.textContent = '⚠️ Yaddaşa yazmaq mümkün olmadı. Brauzerdə yer və ya icazə problemi ola bilər.'; }
         
         document.getElementById('exportHtml').onclick = function() {
             let name = document.getElementById('childName').value.trim() || 'usaq';
@@ -538,7 +628,7 @@ let html = '<div class="res-head"><i class="fas fa-chart-line"></i>Klinik analiz
             let content = document.getElementById('resultsArea').cloneNode(true);
             content.querySelectorAll('.no-export').forEach(function(el){ el.remove(); });
             const reportCss = 'body{font-family:Inter,Arial,sans-serif;padding:24px;color:#1a2233;max-width:820px;margin:0 auto}.res-head{background:#2B5EA8;color:#fff;padding:14px;border-radius:12px;text-align:center;font-weight:700;margin-bottom:14px}.domain-card{border:1px solid #d5dbe8;border-left:8px solid;border-radius:12px;padding:14px;margin-bottom:14px}.domain-top{display:flex;justify-content:space-between;gap:10px}.domain-name{font-weight:700;font-size:1.1rem}.domain-pct{font-weight:800;font-size:1.6rem;color:var(--c)}.level-pill{display:inline-block;margin-top:8px;padding:4px 12px;border-radius:40px;border:1px solid var(--c);font-size:0.85rem;font-weight:700}.scale-bar{background:#e3e8f2;border-radius:8px;height:10px;margin:12px 0}.scale-fill{height:10px;border-radius:8px}.psych-box,.parent-box{padding:12px;border-radius:8px;margin-top:10px;line-height:1.5;font-size:0.92rem}.psych-box{background:#e6f7f4;border-left:4px solid #2DD4BF}.parent-box{background:#e8f0fe;border-left:4px solid #3B82F6}.psych-box strong,.parent-box strong{display:block;margin-bottom:4px}.res-total{border:1px solid #d5dbe8;border-radius:12px;padding:14px}.total-value{font-weight:800;font-size:1.3rem}';
-            let finalHtml = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>CBT '+name+' '+surname+'</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"><style>'+reportCss+'</style></head><body><h2>AN Psixoloji Dəstək Mərkəzi</h2><p><strong>Uşaq:</strong> '+name+' '+surname+' | <strong>Yaş:</strong> '+document.getElementById('childAge').value+' | <strong>Psixoloq:</strong> '+document.getElementById('specialist').value+' | <strong>Tarix:</strong> '+new Date().toLocaleString()+'</p><hr>'+content.innerHTML+'<div style="margin-top:25px;padding:18px;background:#f0f9f4;border-radius:32px;"><strong>🧾 Psixoloqun rəyi:</strong><br>'+comment.replace(/\n/g,'<br>')+'</div></body></html>';
+            let finalHtml = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>CBT '+name+' '+surname+'</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"><style>'+reportCss+'</style></head><body><h2>AN Psixoloji Dəstək Mərkəzi</h2><p><strong>Uşaq:</strong> '+name+' '+surname+' | <strong>Yaş:</strong> '+document.getElementById('childAge').value+' | <strong>Psixoloq:</strong> '+document.getElementById('specialist').value+' | <strong>Tarix:</strong> '+new Date().toLocaleString()+'</p><hr>'+content.innerHTML+'<div style="margin-top:25px;padding:18px;background:#f0f9f4;border-radius:32px;"><strong>🧾 Psixoloqun rəyi:</strong><br>'+comment.replace(/\n/g,'<br>')+'</div><div style="margin-top:25px"><strong>✍️ Psixoloqun imzası:</strong><br>'+(sigData ? '<img src="'+sigData+'" style="max-width:320px;height:auto;border-bottom:1px solid #333">' : '<div style="height:70px;border-bottom:1px solid #333;max-width:320px"></div>')+'<br><small>'+document.getElementById('specialist').value+' · '+new Date().toLocaleDateString()+'</small></div></body></html>';
             let blob = new Blob([finalHtml], {type:'text/html'});
             let a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
