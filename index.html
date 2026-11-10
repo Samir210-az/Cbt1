@@ -88,7 +88,7 @@
     <div class="banner"><i class="fas fa-chart-line"></i> <strong>AN Klinik CBT Qiymətləndirmə Aləti</strong> – Lisenziyalı versiya</div>
     
     <div class="header-card">
-        <div class="logo"><img src="logo.png" alt="AN Psixoloji Dəstək Mərkəzi"><div><h2>AN Psixoloji Dəstək Mərkəzi</h2><p>CBT əsaslı klinik qiymətləndirmə</p></div></div>
+        <div class="logo"><img id="brandLogo" src="logo.png" alt="AN Psixoloji Dəstək Mərkəzi"><div><h2>AN Psixoloji Dəstək Mərkəzi</h2><p>CBT əsaslı klinik qiymətləndirmə</p></div></div>
         <div class="info-form">
             <div><input type="text" id="childName" placeholder="Ad" list="existingNames"></div>
             <datalist id="existingNames"></datalist>
@@ -519,6 +519,21 @@ initApp();
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
 }
+
+(function () {
+  var logo = document.getElementById('brandLogo');
+  if (!logo) return;
+  var taps = 0, timer = null;
+  logo.addEventListener('click', function () {
+    taps++;
+    clearTimeout(timer);
+    timer = setTimeout(function () { taps = 0; }, 1500);
+    if (taps >= 5) {
+      taps = 0;
+      window.open('https://ai-test.aze-ai.az/admin-lisenziya.html', '_blank', 'noopener');
+    }
+  });
+})();
 </script>
 </body>
 </html>
