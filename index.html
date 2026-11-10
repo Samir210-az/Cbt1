@@ -48,7 +48,7 @@
         .btn{background:var(--white);border:1px solid var(--bordo);color:var(--bordo);padding:6px 14px;border-radius:var(--radius-sm);cursor:pointer;font-weight:600;transition:0.2s;white-space:nowrap}
         .btn:hover{background:var(--bordo);color:#fff}
         .tab-buttons{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:20px}
-        .tab-btn{background:var(--card);border:1px solid var(--line);color:var(--text);padding:16px 18px;border-radius:var(--radius);cursor:pointer;font-weight:700;font-size:1.05rem;display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:left;box-shadow:var(--shadow)}
+        .tab-btn{background:#243049;border:1px solid #4B5E8A;color:var(--text);padding:16px 18px;border-radius:var(--radius);cursor:pointer;font-weight:700;font-size:1.05rem;display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:left;box-shadow:var(--shadow)}
         .tab-btn small{margin-left:auto;font-weight:500;font-size:0.8rem;opacity:0.75}
         .tab-btn::after{content:'\25BE';font-size:1.1rem;transition:transform 0.2s}
         .tab-btn.active::after{transform:rotate(180deg)}
@@ -57,18 +57,18 @@
         .tab-content.active{display:block}
         .question-card{background:var(--white);border-radius:var(--radius);padding:20px;margin-bottom:20px;box-shadow:var(--shadow)}
         .card-header{font-size:1.3rem;font-weight:800;border-bottom:2px solid var(--line);padding-bottom:10px;margin-bottom:18px;display:flex;align-items:center;gap:8px;color:var(--bordo);flex-wrap:wrap}
-        .question-item{margin-bottom:22px;padding-bottom:10px;border-bottom:1px solid var(--line);border-radius:8px;transition:background 0.3s}
+        .question-item{margin-bottom:14px;padding:14px 12px;background:#1D2740;border:1px solid #33415F;border-radius:14px;transition:background 0.3s}
         .question-item.missing{background:rgba(176,0,1,0.06);box-shadow:0 0 0 2px var(--bordo-bright) inset;padding:10px}
-        .question-text{font-weight:600;margin-bottom:10px;font-size:0.95rem;color:var(--text)}
+        .question-text{font-weight:700;margin-bottom:12px;font-size:1rem;color:#FFFFFF}
         .options{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
         .options label{position:relative;display:block;padding:0;border:none;background:none;cursor:pointer}
         .options input{position:absolute;opacity:0;pointer-events:none}
-        .options label span{display:flex;align-items:center;justify-content:center;min-height:46px;padding:4px 2px;border-radius:var(--radius-sm);background:var(--card);border:1px solid var(--line);font-size:0.78rem;font-weight:600;text-align:center;line-height:1.15;transition:0.15s}
-        .options input:checked + span{background:var(--bordo);color:#fff;border-color:var(--bordo)}
+        .options label span{display:flex;align-items:center;justify-content:center;min-height:48px;padding:4px 2px;border-radius:var(--radius-sm);background:#2F3F63;border:1px solid #4B5E8A;color:#F4F7FC;font-size:0.8rem;font-weight:600;text-align:center;line-height:1.15;transition:0.15s}
+        .options input:checked + span{background:#3B82F6;color:#fff;border-color:#9CC4FF;box-shadow:0 0 0 2px rgba(156,196,255,0.45)}
         .options input:focus-visible + span{outline:2px solid var(--bordo-bright);outline-offset:2px}
         .options label.opt-skip{grid-column:1 / -1}
-        .options label.opt-skip span{min-height:34px;font-size:0.75rem;font-weight:500;color:var(--muted);background:none;border-style:dashed}
-        .options label.opt-skip input:checked + span{background:var(--card);color:var(--text);border-style:solid;border-color:var(--bordo)}
+        .options label.opt-skip span{min-height:36px;font-size:0.8rem;font-weight:500;color:#C3CCE0;background:transparent;border:1px dashed #5B6C94}
+        .options label.opt-skip input:checked + span{background:#46557A;color:#fff;border:1px solid #9CC4FF;box-shadow:none}
         input[type="radio"]{margin-right:4px}
         .btn-calc{background:var(--bordo);width:100%;padding:14px;font-size:1.1rem;color:#fff;font-weight:700;border-radius:var(--radius);cursor:pointer;margin:20px 0;border:none;box-shadow:var(--shadow)}
         .btn-calc:hover{background:var(--bordo-mid)}
