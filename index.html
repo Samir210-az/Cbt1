@@ -87,14 +87,19 @@
 <div class="container">
     <div class="banner"><i class="fas fa-chart-line"></i> <strong>AN Klinik CBT Qiymətləndirmə Aləti</strong> – Lisenziyalı versiya</div>
     
+    <div id="licenseBar" style="display:none;align-items:center;justify-content:space-between;gap:10px;margin:8px 0;padding:8px 12px;border:1px solid var(--bordo);border-radius:var(--radius-sm);font-size:0.85rem">
+        <span id="licenseInfo"></span>
+        <button type="button" class="btn" id="licenseLogout">Çıxış</button>
+    </div>
+
     <div class="header-card">
         <div class="logo"><img id="brandLogo" src="logo.png" alt="AN Psixoloji Dəstək Mərkəzi"><div><h2>AN Psixoloji Dəstək Mərkəzi</h2><p>CBT əsaslı klinik qiymətləndirmə</p></div></div>
         <div class="info-form">
-            <div><input type="text" id="childName" placeholder="Ad" list="existingNames"></div>
+            <div><input type="text" id="childName" name="cbt_child_name" placeholder="Ad" list="existingNames" autocomplete="off"></div>
             <datalist id="existingNames"></datalist>
-            <div><input type="text" id="childSurname" placeholder="Soyad"></div>
+            <div><input type="text" id="childSurname" name="cbt_child_surname" placeholder="Soyad" autocomplete="off"></div>
             <div><input type="number" id="childAge" placeholder="Yaş"></div>
-            <div><input type="text" id="specialist" placeholder="Psixoloq"></div>
+            <div><input type="text" id="specialist" name="cbt_specialist" placeholder="Psixoloq" autocomplete="off"></div>
             <div><button id="saveBtn" class="btn"><i class="fas fa-save"></i> Saxla</button></div>
             <div><button id="historyBtn" class="btn"><i class="fas fa-history"></i> Keçmiş</button></div>
         </div>
@@ -193,7 +198,8 @@ function isLicensed() {
       const result = await verifyCode(document.getElementById('licenseKey').value, phone);
       verifyBtn.disabled = false;
       if (result.valid) {
-        try { localStorage.setItem('an_cbt1_license', JSON.stringify({ tier: result.tier, expiry: result.expiry })); } catch (e) {}
+        try { localStorage.setItem('an_cbt1_license', JSON.stringify({ tier: result.tier, expiry: result.expiry, phone: phone.replace(/\D/g, '') })); } catch (e) {}
+        renderLicenseBar();
         hideLicenseScreen();
         if (pendingAction) { const fn = pendingAction; pendingAction = null; fn(); }
       } else {
@@ -207,6 +213,29 @@ function isLicensed() {
       }
     };
   }
+
+  function renderLicenseBar() {
+    const bar = document.getElementById('licenseBar');
+    if (!bar) return;
+    let lic = null;
+    try { lic = JSON.parse(localStorage.getItem('an_cbt1_license') || 'null'); } catch (e) {}
+    if (!lic || Date.now() > lic.expiry) { bar.style.display = 'none'; return; }
+    const d = new Date(lic.expiry);
+    const date = String(d.getDate()).padStart(2, '0') + '.' + String(d.getMonth() + 1).padStart(2, '0') + '.' + d.getFullYear();
+    const ph = lic.phone ? '***' + lic.phone.slice(-4) : '';
+    document.getElementById('licenseInfo').textContent = 'Lisenziya aktivdir' + (ph ? ' · ' + ph : '') + ' · ' + date + '-dək';
+    bar.style.display = 'flex';
+  }
+
+  const logoutBtn = document.getElementById('licenseLogout');
+  if (logoutBtn) {
+    logoutBtn.onclick = function() {
+      if (!confirm('Bu cihazdan lisenziyadan çıxılsın? Yenidən daxil olmaq üçün kod və nömrə lazım olacaq. Nəticələr silinmir.')) return;
+      try { localStorage.removeItem('an_cbt1_license'); } catch (e) {}
+      renderLicenseBar();
+    };
+  }
+  renderLicenseBar();
 
   window.requireLicense = function(action) {
     if (isLicensed()) { action(); } else { showLicenseScreen(action); }
