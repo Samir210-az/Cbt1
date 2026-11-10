@@ -123,6 +123,7 @@
         <i class="fas fa-lock"></i>
         <h2>Lisenziya tələb olunur</h2>
         <input type="text" id="licenseKey" placeholder="Lisenziya kodu">
+        <input type="tel" id="licensePhone" placeholder="Telefon nömrəsi (055 123 45 67)" autocomplete="tel">
         <button id="verifyLicenseBtn">Təsdiqlə</button>
         <div id="licenseError" class="error-msg">Lisenziya kodu yanlışdır</div>
     </div>
@@ -142,25 +143,21 @@
 
 <script>
 
-const SALT = "AN-CBT1-2026";
+const LICENSE_API = "https://ai-test.aze-ai.az/api/license";
 
-function computeChecksum(tier, days) {
-  const str = tier + "-" + days + "-" + SALT;
-  let sum = 0;
-  for (let i = 0; i < str.length; i++) sum = (sum * 31 + str.charCodeAt(i)) >>> 0;
-  return sum.toString(36).toUpperCase().padStart(4, "0").slice(-4);
-}
-
-function verifyCode(code) {
-  const parts = code.trim().toUpperCase().split("-");
-  if (parts.length !== 4 || parts[0] !== "LIC") return { valid: false };
-  const tier = parts[1];
-  const days = parseInt(parts[2], 36);
-  if (isNaN(days)) return { valid: false };
-  if (computeChecksum(tier, days) !== parts[3]) return { valid: false };
-  const expiryMs = days * 86400000;
-  if (Date.now() > expiryMs) return { valid: false, expired: true };
-  return { valid: true, tier: tier, expiry: expiryMs };
+async function verifyCode(code, phone) {
+  try {
+    const res = await fetch(LICENSE_API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code: code.trim(), phone: phone.trim(), activate: true, product: "cbt1" })
+    });
+    const data = await res.json();
+    if (data && data.valid) return { valid: true, tier: data.tier, expiry: data.expiry };
+    return { valid: false, reason: data && data.reason };
+  } catch (e) {
+    return { valid: false, reason: "network" };
+  }
 }
 
 function isLicensed() {
@@ -184,15 +181,28 @@ function isLicensed() {
 
   const verifyBtn = document.getElementById('verifyLicenseBtn');
   if (verifyBtn) {
-    verifyBtn.onclick = function() {
-      const result = verifyCode(document.getElementById('licenseKey').value);
+    verifyBtn.onclick = async function() {
+      const errorDiv = document.getElementById('licenseError');
+      const phone = document.getElementById('licensePhone').value;
+      if (phone.replace(/\D/g, '').length < 9) {
+        errorDiv.textContent = 'Telefon nömrəsini daxil edin';
+        errorDiv.style.display = 'block';
+        return;
+      }
+      verifyBtn.disabled = true;
+      const result = await verifyCode(document.getElementById('licenseKey').value, phone);
+      verifyBtn.disabled = false;
       if (result.valid) {
         try { localStorage.setItem('an_cbt1_license', JSON.stringify({ tier: result.tier, expiry: result.expiry })); } catch (e) {}
         hideLicenseScreen();
         if (pendingAction) { const fn = pendingAction; pendingAction = null; fn(); }
       } else {
-        const errorDiv = document.getElementById('licenseError');
-        errorDiv.textContent = result.expired ? 'Lisenziyanın müddəti bitib' : 'Lisenziya kodu yanlışdır';
+        const msgs = {
+          phone: 'Bu kod başqa telefon nömrəsinə bağlanıb',
+          network: 'Bağlantı alınmadı. İnterneti yoxlayıb yenidən cəhd edin',
+          server: 'Server müvəqqəti cavab vermir, bir az sonra yenidən cəhd edin'
+        };
+        errorDiv.textContent = msgs[result.reason] || 'Lisenziya kodu yanlışdır';
         errorDiv.style.display = 'block';
       }
     };
