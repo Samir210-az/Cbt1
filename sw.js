@@ -1,4 +1,4 @@
-const CACHE = "cbt1-v7";
+const CACHE = "cbt1-v8";
 const ASSETS = ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png"];
 
 self.addEventListener("install", (e) => {
