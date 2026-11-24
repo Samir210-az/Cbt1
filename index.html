@@ -175,6 +175,7 @@
 
 <div id="historyModal" class="modal"><div class="modal-content"><span class="close-modal" id="closeHistoryModal">&times;</span><h2><i class="fas fa-history"></i> Keçirilmiş testlər</h2><div id="testListContainer" style="margin:20px 0"></div><button id="closeHistoryModalBtn" class="btn">Bağla</button></div></div>
 
+<script type="module" src="https://samir210-az.github.io/menyu/analytics.js"></script>
 <script>
 
 const LICENSE_API = "https://ai-test.aze-ai.az/api/license";
@@ -469,6 +470,7 @@ window.initApp = function() {
                     for(let [k,v] of Object.entries(t.child)) { let r = document.querySelector('#childForm input[name="'+k+'"][value="'+v+'"]'); if(r) r.checked=true; }
                     for(let [k,v] of Object.entries(t.teacher)) { let r = document.querySelector('#teacherForm input[name="'+k+'"][value="'+v+'"]'); if(r) r.checked=true; }
                     document.getElementById('historyModal').style.display = 'none';
+                    window._cbtFromHistory = true;
                     document.getElementById('calculateBtn').click();
                 };
             });
@@ -608,6 +610,20 @@ let html = '<div class="res-head"><i class="fas fa-chart-line"></i>Klinik analiz
         
         document.getElementById('resultsArea').innerHTML = html;
         document.getElementById('resultsArea').style.display = 'block';
+
+        if (window._cbtFromHistory) {
+            window._cbtFromHistory = false;
+        } else if (typeof window.sgTrackTest === 'function') {
+            const nm = (document.getElementById('childName').value + ' ' + document.getElementById('childSurname').value).trim();
+            const age = document.getElementById('childAge').value;
+            const who = document.getElementById('specialist').value.trim();
+            const parts = ['A','E','S','B','D'].map(d => d + ' ' + (counts[d] ? Math.round(scores[d]/counts[d]/4*100) : 0));
+            const summary = (nm || 'Ad yoxdur') + (age ? ' (' + age + ' yaş)' : '') + (who ? ' · Psixoloq: ' + who : '') + ' · Ümumi ' + totalAvg.toFixed(0) + '% ' + totalLevel.replace(/^\S+\s/, '') + ' · ' + parts.join(', ');
+            if (window._cbtLastTracked !== summary) {
+                window._cbtLastTracked = summary;
+                window.sgTrackTest('CBT Klinik Qiymətləndirmə', summary);
+            }
+        }
 
         const savedRec = allTests.find(t => t.id === currentTestId);
         if (savedRec && savedRec.comment) document.getElementById('psychComment').value = savedRec.comment;
